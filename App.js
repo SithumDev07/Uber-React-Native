@@ -3,6 +3,7 @@ import { StyleSheet, Text, View } from 'react-native';
 import { Provider } from 'react-redux';
 import { store } from './store';
 import HomeScreen from './src/screens/HomeScreen'
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 // 1) Setup Redux
 
@@ -10,7 +11,9 @@ import HomeScreen from './src/screens/HomeScreen'
 export default function App() {
   return (
     <Provider store={store}>
-        <HomeScreen />
+        <SafeAreaProvider>
+          <HomeScreen />
+        </SafeAreaProvider>
     </Provider>
   );
 }
