@@ -2,7 +2,9 @@ import { useNavigation } from '@react-navigation/native'
 import React, { useState } from 'react'
 import { FlatList, SafeAreaView, Image, Text, TouchableOpacity, View } from 'react-native'
 import { Icon } from 'react-native-elements'
+import { useSelector } from 'react-redux'
 import tailwind from 'tailwind-react-native-classnames'
+import { selectTravelTimeInformation } from '../../slices/navSlice'
 
 const data = [
     {
@@ -25,10 +27,13 @@ const data = [
     },
 ]
 
+const SURGE_CHARGE_RATE = 1.5; 
+
 const RideOptionsCard = () => {
 
     const navigation = useNavigation();
     const [selected, setSelected] = useState(null);
+    const travelTimeInformation = useSelector(selectTravelTimeInformation);
 
     return (
         <SafeAreaView style={tailwind`bg-white flex-grow`}>
@@ -39,7 +44,7 @@ const RideOptionsCard = () => {
                         type="font-awesome"
                     />
                 </TouchableOpacity>
-                <Text style={tailwind`text-center py-5 text-xl`}>Select a Ride</Text>
+                <Text style={tailwind`text-center py-5 text-xl`}>Select a Ride - {travelTimeInformation?.distance?.text}</Text>
             </View>
 
             <FlatList 
@@ -60,14 +65,24 @@ const RideOptionsCard = () => {
                         />
                         <View style={tailwind`-ml-6`}>
                             <Text style={tailwind`text-xl font-semibold`}>{title}</Text>
-                            <Text>Travel time...</Text>
+                            <Text>{travelTimeInformation?.duration?.text} Travel Time</Text>
                         </View>
-                        <Text style={tailwind`text-xl`}>$99</Text>
+                        <Text style={tailwind`text-xl`}>
+
+                            {new Intl.NumberFormat('en-gb', {
+                                style: 'currency',
+                                currency: 'GBP'
+                            }).format(
+                                (travelTimeInformation?.duration.value * SURGE_CHARGE_RATE * mulriplier) / 100
+                            )
+                            }
+
+                        </Text>
                     </TouchableOpacity>
                 )}
             />
 
-            <View>
+            <View style={tailwind`mt-auto border-t border-gray-200`}>
                 <TouchableOpacity disabled={!selected} style={tailwind`bg-black py-3 m-3 ${!selected && "bg-gray-300"}`}>
                     <Text style={tailwind`text-center text-white text-xl`}>Choose {selected?.title}</Text>
                 </TouchableOpacity>
